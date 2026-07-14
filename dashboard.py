@@ -129,7 +129,7 @@ if not df.empty:
                 df_filtered,
                 x="stock_level",
                 y="profit",
-                color="segment",
+                color="customer_segment",
                 labels={"stock_level": "Nivel de Stock", "profit": "Utilidad"},
                 template="seaborn"
             )
