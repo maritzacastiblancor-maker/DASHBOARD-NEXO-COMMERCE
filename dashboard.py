@@ -34,9 +34,15 @@ if not df.empty:
     # --- BARRA LATERAL: FILTROS ---
     st.sidebar.header("Filtros")
 
-    # Filtro de País (Mapeado a las siglas de la captura: MX, CO, PE)
-    if 'country' in df.columns:
-        paises_disponibles = df['country'].unique()
+    # 1. Buscar columna de País de forma inteligente (tolera mayúsculas/siglas)
+    col_pais = None
+    for col in ['country', 'Country', 'pais', 'Pais', 'País']:
+        if col in df.columns:
+            col_pais = col
+            break
+
+    if col_pais:
+        paises_disponibles = df[col_pais].unique()
         paises_seleccionados = st.sidebar.multiselect(
             "Filtrar por País",
             options=paises_disponibles,
@@ -45,9 +51,15 @@ if not df.empty:
     else:
         paises_seleccionados = []
 
-    # Filtro de Segmento (Corregidos los errores de traducción del navegador)
-    if 'segment' in df.columns:
-        segmentos_disponibles = df['segment'].unique()
+    # 2. Buscar columna de Segmento de forma inteligente (tolera segment, Segment, segmento, etc.)
+    col_segmento = None
+    for col in ['segment', 'Segment', 'segmento', 'Segmento']:
+        if col in df.columns:
+            col_segmento = col
+            break
+
+    if col_segmento:
+        segmentos_disponibles = df[col_segmento].unique()
         segmentos_seleccionados = st.sidebar.multiselect(
             "Filtrar por Segmento",
             options=segmentos_disponibles,
@@ -56,12 +68,14 @@ if not df.empty:
     else:
         segmentos_seleccionados = []
 
-    # Aplicar Filtros a la Base de Datos
-    df_filtered = df[
-        (df['country'].isin(paises_seleccionados)) &
-        (df['segment'].isin(segmentos_seleccionados))
-    ]
+    # --- APLICAR FILTROS DE MANERA DINÁMICA (EVITA EL KEYERROR) ---
+    df_filtered = df.copy()
 
+    if col_pais and paises_seleccionados:
+        df_filtered = df_filtered[df_filtered[col_pais].isin(paises_seleccionados)]
+
+    if col_segmento and segmentos_seleccionados:
+        df_filtered = df_filtered[df_filtered[col_segmento].isin(segmentos_seleccionados)]
     # --- CUERPO PRINCIPAL ---
     st.title("📊 Panel de análisis de NEXO Commerce")
     st.write("Explora los datos interactivos de clientes, inventario y utilidad.")
