@@ -123,6 +123,8 @@ if not df.empty:
         st.subheader("📦 Categorías principales: Ganancia vs Costo Inventario")
         if 'stock_level' in df_filtered.columns and 'profit' in df_filtered.columns:
             # Gráfica de dispersión basada en tus análisis multivariados previos
+            st.write("Columnas disponibles:", df_filtered.columns.tolist())
+            st.write("¿La tabla tiene datos?:", df_filtered.head())
             fig_scatter = px.scatter(
                 df_filtered,
                 x="stock_level",
