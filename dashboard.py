@@ -233,7 +233,7 @@ if not df.empty:
 #             st.plotly_chart(fig_scatter, use_container_width=True)
 
 # Install localtunnel to create a public URL for your Streamlit app
-!npm install localtunnel
+
 
 # Run Streamlit app and expose it via localtunnel
 
